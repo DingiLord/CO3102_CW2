@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">CO3102_CW2</string>
+    <string name="login_page">Login Page</string>
+    <string name="email">Email</string>
+    <string name="register">Register</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="emailRegister">Email</string>
+    <string name="full_nameRegister">Full Name</string>
+    <string name="date_of_birthRegister">Date of Birth</string>
+    <string name="sni_numberRegister">SNI Number</string>
+    <string name="passwordRegister">Password</string>
+    <string name="home_adressRegister">Home Adress</string>
+    <string name="registration_pageRegister">Registration Page</string>
+    <string name="registerRegister">Register</string>
+</resources>
