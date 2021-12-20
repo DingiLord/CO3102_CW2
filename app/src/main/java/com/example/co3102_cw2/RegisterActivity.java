@@ -2,15 +2,24 @@ package com.example.co3102_cw2;
 
 import static android.content.ContentValues.TAG;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
+import android.content.Intent;
+import android.graphics.Camera;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +42,7 @@ public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     EditText rEmail,rFullName,rDOB,rHomeAdd,rPassword,rConfirmPassword,rSNI;
     Button register;
+    ImageButton camera;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +57,18 @@ public class RegisterActivity extends AppCompatActivity {
         rConfirmPassword = findViewById(R.id.ConfirmPasswordRegister);
         rSNI = findViewById(R.id.SNIRegister);
         register = findViewById(R.id.CompleteRegistrationButton);
+        camera = findViewById(R.id.CameraRegister);
 
+        // Camera Button
 
+        camera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestPermissionLauncher.launch(
+                        Manifest.permission.CAMERA);
+            }
+        });
+        // Register Button
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,6 +179,33 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
+
+    ActivityResultLauncher<Intent> GetQRCode = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            if(result.getResultCode() == 1){
+                Intent intent = result.getData();
+                if(intent != null){
+                    rSNI.setText(intent.getStringExtra("result"));
+                }
+            }
+        }
+    });
+
+    private ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted ->{
+        if (isGranted){
+
+//            Toast.makeText(getApplicationContext(), "WOW", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getBaseContext(), CameraActivity.class);
+            GetQRCode.launch(intent);
+
+        } else {
+            //TODO: Implement if user refuses to give permissions
+            Toast.makeText(getApplicationContext(), "Cannot Use the camera without permissions", Toast.LENGTH_SHORT).show();
+        }
+    });
+
+
 
 
 }
