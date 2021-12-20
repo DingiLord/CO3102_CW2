@@ -15,10 +15,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -40,6 +48,7 @@ public class RegisterActivity extends AppCompatActivity {
         rSNI = findViewById(R.id.SNIRegister);
         register = findViewById(R.id.CompleteRegistrationButton);
 
+
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,6 +61,7 @@ public class RegisterActivity extends AppCompatActivity {
                 String confirmPassword = rConfirmPassword.getText().toString().trim();
                 String sni = rSNI.getText().toString().trim();
 
+                // Checks for Correct Values
                 if(TextUtils.isEmpty(email)){
                     rEmail.setError("Email is Required");
                     return;
@@ -80,12 +90,16 @@ public class RegisterActivity extends AppCompatActivity {
                     rPassword.setError("Password has to be atleast 8 characters");
                     return;
                 }
-                if(password != confirmPassword){
+                if(!TextUtils.equals(password,confirmPassword)){
                     rConfirmPassword.setError("Passwords must be matching");
+                    return;
                 }
-
                 if(TextUtils.isEmpty(sni)){
                     rSNI.setError("Shangri-La National Insurance Number Is Required");
+                    return;
+                }
+                if(sni.length() != 8){
+                    rSNI.setError("SNI Number is 8 Digits");
                     return;
                 }
                 mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -93,9 +107,20 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
                             Log.d(TAG, "createUserWithEmail:success");
+                            addUserToDatabase(email,fullName,dob,homeAddress,sni);
+
                         }else{
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                         }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        if(e instanceof FirebaseAuthUserCollisionException){
+                            rEmail.setError("Email is Already Taken");
+                            return;
+                        }else
+                            Toast.makeText(getApplicationContext(), "Something Went Really Wrong", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -111,6 +136,28 @@ public class RegisterActivity extends AppCompatActivity {
            // Toast.makeText(getApplicationContext(), "You're already logged in", Toast.LENGTH_SHORT).show();
             //TODO: Block the button
         }
+    }
+
+    public void addUserToDatabase(String email,String name, String dob, String homeAddress, String sni){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Map<String, Object> user = new HashMap<>();
+        user.put("Email", email);
+        user.put("Full Name", name);
+        user.put("Date of Birth", dob);
+        user.put("Home Address", homeAddress);
+        user.put("SNI Number", sni);
+
+        db.collection("users").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w(TAG, "Error adding document", e);
+            }
+        });
     }
 
 
