@@ -173,6 +173,7 @@ public class RegisterActivity extends AppCompatActivity {
         db.collection("users").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
+                // TODO: After Successfull Registration move user to the user dashboard and close db connection
                 Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
             }
         }).addOnFailureListener(new OnFailureListener() {

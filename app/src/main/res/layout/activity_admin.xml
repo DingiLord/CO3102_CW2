@@ -7,7 +7,7 @@
     tools:context=".AdminActivity">
 
     <TextView
-        android:id="@+id/QuestionsText"
+        android:id="@+id/QuestionsTextAdmin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -19,15 +19,15 @@
         android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/QuestionsRecyclerView"
+        android:id="@+id/QuestionsRecyclerViewAdmin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/QuestionsText"
+        android:layout_below="@+id/QuestionsTextAdmin"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:nestedScrollingEnabled="true"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floatingActionButton"
+            android:id="@+id/floatingActionButtonAdmin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
