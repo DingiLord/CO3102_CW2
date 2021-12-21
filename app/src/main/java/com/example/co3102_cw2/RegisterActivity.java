@@ -82,6 +82,9 @@ public class RegisterActivity extends AppCompatActivity {
                 String sni = rSNI.getText().toString().trim();
 
                 // Checks for Correct Values
+                //TODO: Check for Proper Calendar Date Format and make sure The user is atleast 16 years old
+                //TODO: Check SNI number with the DataBase
+                //TODO: Check if SNI is already Taken
                 if(TextUtils.isEmpty(email)){
                     rEmail.setError("Email is Required");
                     return;
