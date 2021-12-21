@@ -18,7 +18,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingStart = "10dp"
-            tools:text="Testing Text" />
+            tools:text="Testing Text"
+            android:clickable="false"/>
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

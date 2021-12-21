@@ -4,10 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import com.example.co3102_cw2.Adapter.QuestionAdapter;
 import com.example.co3102_cw2.Model.QuestionListItem;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +19,8 @@ public class AdminActivity extends AppCompatActivity {
 
     private RecyclerView questionRecyclerView;
     private QuestionAdapter questionAdapter;
-
     private List<QuestionListItem> questionList;
+    private FloatingActionButton floatingActionButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +32,7 @@ public class AdminActivity extends AppCompatActivity {
         questionRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         questionAdapter = new QuestionAdapter(this);
         questionRecyclerView.setAdapter(questionAdapter);
+        floatingActionButton = findViewById(R.id.floatingActionButtonAdmin);
 
         QuestionListItem item = new QuestionListItem();
         item.setId(0);
@@ -42,6 +46,14 @@ public class AdminActivity extends AppCompatActivity {
         questionList.add(item);
 
         questionAdapter.setQuestionList(questionList);
+
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(),AddNewQuestionActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
 }

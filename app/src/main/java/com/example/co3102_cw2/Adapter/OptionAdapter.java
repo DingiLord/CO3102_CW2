@@ -8,17 +8,19 @@ import android.widget.CheckBox;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.co3102_cw2.AddNewQuestionActivity;
 import com.example.co3102_cw2.AdminActivity;
+import com.example.co3102_cw2.Model.Option;
 import com.example.co3102_cw2.Model.QuestionListItem;
 import com.example.co3102_cw2.R;
 
 import java.util.List;
 
-public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHolder> {
-    private List<QuestionListItem> questionList;
-    private AdminActivity activity;
+public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.ViewHolder> {
+    private List<Option> optionList;
+    private AddNewQuestionActivity activity;
 
-    public QuestionAdapter(AdminActivity activity){
+    public OptionAdapter(AddNewQuestionActivity activity){
         this.activity = activity;
     }
 
@@ -31,28 +33,28 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
-        CheckBox question;
+        CheckBox option;
 
         ViewHolder(View view){
             super(view);
-            question = view.findViewById(R.id.QuestionCheckBox);
+            option = view.findViewById(R.id.QuestionCheckBox);
         }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull QuestionAdapter.ViewHolder holder, int position) {
-        QuestionListItem item = questionList.get(position);
-        holder.question.setText(item.getQuestion());
-        holder.question.setChecked(item.getStatus());
+    public void onBindViewHolder(@NonNull OptionAdapter.ViewHolder holder, int position) {
+        Option item = optionList.get(position);
+        holder.option.setText(item.getText());
+        holder.option.setChecked(item.isStatus());
     }
 
     @Override
     public int getItemCount() {
-        return questionList == null ? 0 : questionList.size();
+        return optionList == null ? 0 : optionList.size();
     }
 
-    public void setQuestionList(List<QuestionListItem> questionList){
-        this.questionList = questionList;
+    public void setOptionList(List<Option> optionList){
+        this.optionList = optionList;
         notifyDataSetChanged();
     }
 }

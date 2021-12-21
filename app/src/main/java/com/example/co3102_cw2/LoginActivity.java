@@ -110,6 +110,7 @@ public class LoginActivity extends AppCompatActivity {
                         Log.d(TAG,"USER ID: " + user.getUid());
 
                         if(user.getUid().equals(i.getValue().toString())){
+                            // Starts Admin Activity
                             loggedIn = true;
                             Intent intent = new Intent(getBaseContext(),AdminActivity.class);
                             startActivity(intent);
