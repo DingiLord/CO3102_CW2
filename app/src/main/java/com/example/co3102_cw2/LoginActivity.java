@@ -102,22 +102,27 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 DocumentSnapshot document = task.getResult();
+                boolean loggedIn = false;
                 if(document.exists()){
                     for(Map.Entry<String,Object> i : document.getData().entrySet()){
+                        // Todo: REMOVE AFTER Finishing The CW2
+                        Log.d(TAG,"Admind ID: " + i.getValue().toString());
+                        Log.d(TAG,"USER ID: " + user.getUid());
+
                         if(user.getUid().equals(i.getValue().toString())){
+                            loggedIn = true;
                             Intent intent = new Intent(getBaseContext(),AdminActivity.class);
-                            startActivity(intent);
-                            break;
-                        } else {
-                            Intent intent = new Intent(getBaseContext(),UserActivity.class);
                             startActivity(intent);
                             break;
                         }
                     }
-
-                } else {
-                    Log.d(TAG, "Documend Does Not Exist");
+                    if(loggedIn == false){
+                        // Stars Normal User Activity
+                        Intent intent = new Intent(getBaseContext(),UserActivity.class);
+                        startActivity(intent);
+                    }
                 }
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
