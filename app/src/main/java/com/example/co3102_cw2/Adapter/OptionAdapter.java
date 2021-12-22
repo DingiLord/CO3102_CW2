@@ -1,5 +1,6 @@
 package com.example.co3102_cw2.Adapter;
 
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.CheckBox;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.co3102_cw2.AddNewOption;
 import com.example.co3102_cw2.AddNewQuestionActivity;
 import com.example.co3102_cw2.AdminActivity;
 import com.example.co3102_cw2.Model.Option;
@@ -56,5 +58,14 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.ViewHolder
     public void setOptionList(List<Option> optionList){
         this.optionList = optionList;
         notifyDataSetChanged();
+    }
+    public void editOption(int position){
+        Option option = optionList.get(position);
+        Bundle bundle = new Bundle();
+        bundle.putInt("id",option.getId());
+        bundle.putString("option",option.getText());
+        AddNewOption fragment = new AddNewOption();
+        fragment.setArguments(bundle);
+        fragment.show(activity.getSupportFragmentManager(), AddNewOption.TAG);
     }
 }

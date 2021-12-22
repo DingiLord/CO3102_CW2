@@ -9,13 +9,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.co3102_cw2.AdminActivity;
-import com.example.co3102_cw2.Model.QuestionListItem;
+import com.example.co3102_cw2.Model.Question;
 import com.example.co3102_cw2.R;
 
 import java.util.List;
 
 public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHolder> {
-    private List<QuestionListItem> questionList;
+    private List<Question> questionList;
     private AdminActivity activity;
 
     public QuestionAdapter(AdminActivity activity){
@@ -41,9 +41,9 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull QuestionAdapter.ViewHolder holder, int position) {
-        QuestionListItem item = questionList.get(position);
+        Question item = questionList.get(position);
         holder.question.setText(item.getQuestion());
-        holder.question.setChecked(item.getStatus());
+        holder.question.setChecked(item.isStatus());
     }
 
     @Override
@@ -51,7 +51,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         return questionList == null ? 0 : questionList.size();
     }
 
-    public void setQuestionList(List<QuestionListItem> questionList){
+    public void setQuestionList(List<Question> questionList){
         this.questionList = questionList;
         notifyDataSetChanged();
     }

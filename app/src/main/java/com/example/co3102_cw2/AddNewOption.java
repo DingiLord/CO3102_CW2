@@ -6,15 +6,28 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
+
+import com.example.co3102_cw2.Model.Option;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class AddNewOption extends BottomSheetDialogFragment {
 
@@ -22,7 +35,7 @@ public class AddNewOption extends BottomSheetDialogFragment {
 
     private EditText newOptionText;
     private Button newOptionSaveButton;
-    // Possible needs a database
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public static AddNewOption newInstance(){
         return new AddNewOption();
@@ -47,18 +60,18 @@ public class AddNewOption extends BottomSheetDialogFragment {
         newOptionText = getView().findViewById(R.id.newOptionText);
         newOptionSaveButton = getView().findViewById(R.id.newOptionButton);
 
-      //  FirebaseFirestore db = FirebaseFirestore.getInstance();
         boolean editMode = false;
         final Bundle bundle = getArguments();
-        if(bundle != null){
+        if(bundle != null) {
             editMode = true;
             String option = bundle.getString("option");
             newOptionText.setText(option);
-            if(option.length()>0){
+            if (option.length() > 0) {
                 //TODO: Make button available if there is text
                 //newOptionSaveButton.setTextColor(Colour.);
 
             }
+        }
             newOptionText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -91,8 +104,11 @@ public class AddNewOption extends BottomSheetDialogFragment {
                         // Update existing Option in The List
 
                     } else {
-                        // Pass it to the list and add it to the options
-
+//                        createOptionAndAddToDatabase(OptionText);
+                        Option option = new Option();
+                        option.setStatus(false);
+                        option.setText(OptionText);
+                        addTempToDatabase(option);
                     }
                     dismiss();
                 }
@@ -101,14 +117,31 @@ public class AddNewOption extends BottomSheetDialogFragment {
         }
 
 
-    }
-
     @Override
     public void onDismiss(DialogInterface dialogInterface){
         Activity activity = getActivity();
         if(activity instanceof DialogCloseListener){
             ((DialogCloseListener)activity).handleDialogClose(dialogInterface);
         }
+    }
+
+    private void addTempToDatabase(Option option){
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        Map<String, Object> optionMap = new HashMap<>();
+//        String identifier = String.valueOf(getOptionID());
+//        Toast.makeText(getContext(), identifier, Toast.LENGTH_SHORT).show();
+//        optionMap.put(String.valueOf(option.getId()),option);
+        db.collection("tmp").add(option).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                Log.d(TAG, "Successfully added option to the Database");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "Error adding document: " + e);
+            }
+        });
     }
 
 

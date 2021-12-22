@@ -14,14 +14,19 @@ import android.util.Log;
 import android.view.View;
 
 import com.example.co3102_cw2.Adapter.QuestionAdapter;
+import com.example.co3102_cw2.Model.Question;
 import com.example.co3102_cw2.Model.QuestionListItem;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,14 +37,18 @@ public class AdminActivity extends AppCompatActivity {
 
     private RecyclerView questionRecyclerView;
     private QuestionAdapter questionAdapter;
-    private List<QuestionListItem> questionList;
+    private ArrayList<Question> questionList;
     private FloatingActionButton floatingActionButton;
+
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    CollectionReference questionsDB = db.collection("questions");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
         getSupportActionBar().hide();
+        questionList = new ArrayList<>();
         questionRecyclerView = findViewById(R.id.QuestionsRecyclerViewAdmin);
         questionRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         questionAdapter = new QuestionAdapter(this);
@@ -51,7 +60,7 @@ public class AdminActivity extends AppCompatActivity {
         item.setQuestion("What colour is the sky?");
         item.setStatus(false);
 
-        InitialData(questionAdapter);
+        InitialData();
 
 //        questionList.add(item);
 //        questionList.add(item);
@@ -71,37 +80,64 @@ public class AdminActivity extends AppCompatActivity {
 
     }
 
-    // Populates Questions from the Database
-    public void InitialData(QuestionAdapter questionAdapter){
-        questionList = new ArrayList<>();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference docRef = db.collection("general").document("Questions");
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+    // Populates Questions from the Database (Pretty sure I dont actually need to pass the adapter)
+    public void InitialData(){
+        questionsDB.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    DocumentSnapshot documentSnapshot = task.getResult();
-                    if(documentSnapshot.exists()){
-                        for(Map.Entry<String,Object> i : documentSnapshot.getData().entrySet()){
-                          Log.d(TAG,"Question?: "+i.getValue().toString());
-                          QuestionListItem item = new QuestionListItem();
-                          item.setStatus(false);
-                          item.setQuestion(i.getValue().toString());
-                          questionList.add(item);
-                        }
-                        questionAdapter.setQuestionList(questionList);
-                    } else {
-                        Log.d(TAG, "No such document");
-                    }
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                questionList.clear();
+                for(QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
+                    Question question = documentSnapshot.toObject(Question.class);
+                    questionList.add(question);
                 }
+                questionAdapter.setQuestionList(questionList);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                //TODO: action if it fails
+                Log.d(TAG,"Something went wrong: " + e);
             }
         });
 
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // KINDA CHEATING
+        InitialData();
+    }
+
+    //    public void InitialData(QuestionAdapter questionAdapter){
+//        questionList = new ArrayList<>();
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        DocumentReference docRef = db.collection("general").document("Questions");
+//        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if(task.isSuccessful()){
+//                    DocumentSnapshot documentSnapshot = task.getResult();
+//                    if(documentSnapshot.exists()){
+//                        for(Map.Entry<String,Object> i : documentSnapshot.getData().entrySet()){
+//                          Log.d(TAG,"Question?: "+i.getValue().toString());
+//                          QuestionListItem item = new QuestionListItem();
+//                          item.setStatus(false);
+//                          item.setQuestion(i.getValue().toString());
+//                          questionList.add(item);
+//                        }
+//                        questionAdapter.setQuestionList(questionList);
+//                    } else {
+//                        Log.d(TAG, "No such document");
+//                    }
+//                }
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                //TODO: action if it fails
+//            }
+//        });
+//
+//    }
 
 }
