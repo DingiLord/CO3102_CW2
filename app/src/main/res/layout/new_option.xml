@@ -1,22 +1,23 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialogbox_bg">
 
     <EditText
-
-        android:id="@+id/newQuestionText"
+        android:id="@+id/newOptionText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@null"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:hint="New Question"/>
+        android:textColor="@color/black"
+        android:hint="New Option"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
     <Button
-        android:id="@+id/newQuestionButton"
+        android:id="@+id/newOptionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/newQuestionText"
+        android:layout_below="@id/newOptionText"
         android:layout_alignParentEnd="true"
         android:text="save"
         android:textSize="16sp" />

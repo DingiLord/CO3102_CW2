@@ -4,17 +4,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 
 import com.example.co3102_cw2.Adapter.OptionAdapter;
 import com.example.co3102_cw2.Model.Option;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class AddNewQuestionActivity extends AppCompatActivity {
+public class AddNewQuestionActivity extends AppCompatActivity implements DialogCloseListener {
 
     private RecyclerView optionRecyclerView;
     private OptionAdapter optionAdapter;
@@ -36,7 +40,7 @@ public class AddNewQuestionActivity extends AppCompatActivity {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                AddNewOption.newInstance().show(getSupportFragmentManager(), AddNewOption.TAG);
             }
         });
 
@@ -51,4 +55,18 @@ public class AddNewQuestionActivity extends AppCompatActivity {
 //        optionList.add(item);
 //        optionAdapter.setOptionList(optionList);
     }
+    @Override
+    public void handleDialogClose(DialogInterface dialogInterface) {
+        // Infrom the adapter that the data has changed
+//         optionAdapter.setOptionList(optionsList);
+        optionAdapter.notifyDataSetChanged();
+    }
+
+//    public ArrayList getListOfOptions(){
+//        ArrayList<String> optionList = new ArrayList<>();
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        DocumentReference docRef = db.collection("general").document("Questions");
+//
+//        return optionList;
+//    }
 }
