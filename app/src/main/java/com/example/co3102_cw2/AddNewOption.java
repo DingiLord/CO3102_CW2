@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -21,9 +22,12 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
 import java.util.HashMap;
@@ -36,6 +40,7 @@ public class AddNewOption extends BottomSheetDialogFragment {
     private EditText newOptionText;
     private Button newOptionSaveButton;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    CollectionReference tmp = db.collection("tmp");
 
     public static AddNewOption newInstance(){
         return new AddNewOption();
@@ -102,6 +107,29 @@ public class AddNewOption extends BottomSheetDialogFragment {
                     String OptionText = newOptionText.getText().toString();
                     if(finalEditMode){
                         // Update existing Option in The List
+
+                        //Update The Database
+                        tmp.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                for(QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
+                                    if(documentSnapshot.get("text").toString().equals(bundle.getString("option"))){
+                                        documentSnapshot.getReference().update("text",OptionText).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Log.d(TAG, "DocumentSnapshot successfully updated!");
+                                            }
+                                        })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Log.w(TAG, "Error updating document", e);
+                                                    }
+                                                });
+                                    }
+                                }
+                            }
+                        });
 
                     } else {
 //                        createOptionAndAddToDatabase(OptionText);

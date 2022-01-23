@@ -4,6 +4,7 @@ import static com.example.co3102_cw2.AddNewOption.TAG;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -61,6 +62,8 @@ public class AddNewQuestionActivity extends AppCompatActivity implements DialogC
         optionRecyclerView.setAdapter(optionAdapter);
         finish = findViewById(R.id.finishCreatingQuestionButton);
         floatingActionButton = findViewById(R.id.FABQuestionCreation);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new RecyclerItemTouchHelper(optionAdapter));
+        itemTouchHelper.attachToRecyclerView(optionRecyclerView);
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override

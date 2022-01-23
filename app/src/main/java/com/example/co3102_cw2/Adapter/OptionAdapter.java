@@ -1,10 +1,15 @@
 package com.example.co3102_cw2.Adapter;
 
+import static com.example.co3102_cw2.AddNewOption.TAG;
+
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,7 +20,12 @@ import com.example.co3102_cw2.AdminActivity;
 import com.example.co3102_cw2.Model.Option;
 import com.example.co3102_cw2.Model.QuestionListItem;
 import com.example.co3102_cw2.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.List;
 
@@ -23,6 +33,7 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.ViewHolder
     private List<Option> optionList;
     private AddNewQuestionActivity activity;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    CollectionReference tmp = db.collection("tmp");
 
     public OptionAdapter(AddNewQuestionActivity activity){
         this.activity = activity;
@@ -52,6 +63,8 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.ViewHolder
         holder.option.setChecked(item.isStatus());
     }
 
+    public Context getContext() { return activity;}
+
     @Override
     public int getItemCount() {
         return optionList == null ? 0 : optionList.size();
@@ -68,12 +81,33 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.ViewHolder
         bundle.putString("option",option.getText());
         AddNewOption fragment = new AddNewOption();
         fragment.setArguments(bundle);
-        fragment.show(activity.getSupportFragmentManager(), AddNewOption.TAG);
+        fragment.show(activity.getSupportFragmentManager(), TAG);
+
+        Log.d(TAG, "Current Option Text: " + option.getText());
+
+
+
+        // TODO: Edit Option within existing question
     }
 
     public void deleteOption(int position){
         Option option = optionList.get(position);
-        // Call delete
+        // Delete From TMP if it is still within creation of a question, however on
+        // fail it will assume that this is not a tmp value and an already existing question therefore it will remove from a question
+        tmp.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for(QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
+                    if(documentSnapshot.get("text").toString().equals(option.getText())){
+                        documentSnapshot.getReference().delete();
+                    }
+                }
+            }
+        });
+        // TODO: Remove Option From a question if it exists in a question
+
+
+        //Delete From a LocalList
         optionList.remove(position);
         notifyItemRemoved(position);
 
