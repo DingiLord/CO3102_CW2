@@ -48,6 +48,7 @@ public class AddNewQuestionActivity extends AppCompatActivity implements DialogC
 
     //TODO: Implement edit and remove on options
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,7 +97,7 @@ public class AddNewQuestionActivity extends AppCompatActivity implements DialogC
         // Infrom the adapter that the data has changed
 //        optionList = new ArrayList<>();
 //        DocumentReference docRef = db.collection("general").document("tmp");
-//
+
         tmp.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -117,7 +118,6 @@ public class AddNewQuestionActivity extends AppCompatActivity implements DialogC
 
     @Override
     protected void onDestroy() {
-        // I was adviced to not do this but...... Think of other methods later
         super.onDestroy();
         //REMOVE TMP FROM THE DATABASE
         tmp.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {

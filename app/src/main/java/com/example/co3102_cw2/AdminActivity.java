@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.co3102_cw2.Adapter.QuestionAdapter;
 import com.example.co3102_cw2.Model.Question;
@@ -33,7 +34,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class AdminActivity extends AppCompatActivity {
+public class AdminActivity extends AppCompatActivity implements QuestionAdapter.OnQuestionListener {
 
     private RecyclerView questionRecyclerView;
     private QuestionAdapter questionAdapter;
@@ -51,7 +52,7 @@ public class AdminActivity extends AppCompatActivity {
         questionList = new ArrayList<>();
         questionRecyclerView = findViewById(R.id.QuestionsRecyclerViewAdmin);
         questionRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        questionAdapter = new QuestionAdapter(this);
+        questionAdapter = new QuestionAdapter(this,this);
         questionRecyclerView.setAdapter(questionAdapter);
         floatingActionButton = findViewById(R.id.floatingActionButtonAdmin);
 
@@ -104,8 +105,16 @@ public class AdminActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // KINDA CHEATING
+        // Refreshes The Home Page
         InitialData();
+    }
+
+    @Override
+    public void onQuestionClick(int position) {
+        questionList.get(position);
+        Toast.makeText(this, questionList.get(position).getQuestion(), Toast.LENGTH_SHORT).show();
+//        Intent intent = new Intent(this,AddNewQuestionActivity.class);
+//        startActivity(intent);
     }
 
     //    public void InitialData(QuestionAdapter questionAdapter){

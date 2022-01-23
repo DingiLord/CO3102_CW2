@@ -15,12 +15,14 @@ import com.example.co3102_cw2.AdminActivity;
 import com.example.co3102_cw2.Model.Option;
 import com.example.co3102_cw2.Model.QuestionListItem;
 import com.example.co3102_cw2.R;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
 public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.ViewHolder> {
     private List<Option> optionList;
     private AddNewQuestionActivity activity;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public OptionAdapter(AddNewQuestionActivity activity){
         this.activity = activity;
@@ -68,4 +70,13 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.ViewHolder
         fragment.setArguments(bundle);
         fragment.show(activity.getSupportFragmentManager(), AddNewOption.TAG);
     }
+
+    public void deleteOption(int position){
+        Option option = optionList.get(position);
+        // Call delete
+        optionList.remove(position);
+        notifyItemRemoved(position);
+
+    }
+
 }

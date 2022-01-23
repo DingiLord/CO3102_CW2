@@ -14,7 +14,7 @@
         <activity
             android:name=".AddNewQuestionActivity"
             android:exported="false"
-            android:parentActivityName=".AdminActivity"/>
+            android:parentActivityName=".AdminActivity" />
         <activity
             android:name=".AdminActivity"
             android:exported="false" />

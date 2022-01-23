@@ -17,9 +17,11 @@ import java.util.List;
 public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHolder> {
     private List<Question> questionList;
     private AdminActivity activity;
+    private OnQuestionListener onQuestionListener;
 
-    public QuestionAdapter(AdminActivity activity){
+    public QuestionAdapter(AdminActivity activity, OnQuestionListener onQuestionListener){
         this.activity = activity;
+        this.onQuestionListener = onQuestionListener;
     }
 
     @NonNull
@@ -27,15 +29,22 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.question_layout,parent,false);
-        return new ViewHolder(itemView);
+        return new ViewHolder(itemView, onQuestionListener);
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         CheckBox question;
-
-        ViewHolder(View view){
+        OnQuestionListener onQuestionListener;
+        ViewHolder(View view, OnQuestionListener onQuestionListener){
             super(view);
             question = view.findViewById(R.id.QuestionCheckBox);
+            this.onQuestionListener = onQuestionListener;
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            onQuestionListener.onQuestionClick(getAdapterPosition());
         }
     }
 
@@ -55,4 +64,9 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         this.questionList = questionList;
         notifyDataSetChanged();
     }
+
+    public interface OnQuestionListener{
+        void onQuestionClick(int position);
+    }
+
 }
