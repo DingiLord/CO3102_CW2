@@ -1,5 +1,6 @@
 package com.example.co3102_cw2.Adapter;
 
+import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +17,10 @@ import java.util.List;
 
 public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHolder> {
     private List<Question> questionList;
-    private AdminActivity activity;
+    private Activity activity;
     private OnQuestionListener onQuestionListener;
 
-    public QuestionAdapter(AdminActivity activity, OnQuestionListener onQuestionListener){
+    public QuestionAdapter(Activity activity, OnQuestionListener onQuestionListener){
         this.activity = activity;
         this.onQuestionListener = onQuestionListener;
     }

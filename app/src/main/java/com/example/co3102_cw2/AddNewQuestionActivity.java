@@ -51,9 +51,6 @@ public class AddNewQuestionActivity extends AppCompatActivity implements DialogC
     CollectionReference tmp = db.collection("tmp");
     CollectionReference quest = db.collection("questions");
 
-    //TODO: Implement edit and remove on options
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -144,4 +141,5 @@ public class AddNewQuestionActivity extends AppCompatActivity implements DialogC
         });
 
     }
+
 }

@@ -56,10 +56,6 @@ public class AdminActivity extends AppCompatActivity implements QuestionAdapter.
         questionRecyclerView.setAdapter(questionAdapter);
         floatingActionButton = findViewById(R.id.floatingActionButtonAdmin);
 
-        QuestionListItem item = new QuestionListItem();
-        item.setId(0);
-        item.setQuestion("What colour is the sky?");
-        item.setStatus(false);
 
         InitialData();
 
@@ -81,7 +77,7 @@ public class AdminActivity extends AppCompatActivity implements QuestionAdapter.
 
     }
 
-    // Populates Questions from the Database (Pretty sure I dont actually need to pass the adapter)
+    // Populates Questions from the Database
     public void InitialData(){
         questionsDB.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override

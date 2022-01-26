@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -49,17 +50,18 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.ViewHolder
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.question_layout,parent,false);
+                .inflate(R.layout.option_layout,parent,false);
         return new ViewHolder(itemView);
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         CheckBox option;
 
         ViewHolder(View view){
             super(view);
             option = view.findViewById(R.id.QuestionCheckBox);
         }
+
     }
     public OptionAdapter(Activity activity){
             this.activity = activity;
@@ -69,6 +71,16 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.ViewHolder
     public void onBindViewHolder(@NonNull OptionAdapter.ViewHolder holder, int position) {
         Option item = optionList.get(position);
         holder.option.setText(item.getText());
+        holder.option.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    item.setStatus(true);
+                } else {
+                    item.setStatus(false);
+                }
+            }
+        });
         holder.option.setChecked(item.isStatus());
     }
 
@@ -93,9 +105,7 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.ViewHolder
 
         Log.d(TAG, "Current Option Text: " + option.getText());
 
-
-
-        // TODO: Edit Option within existing question
+        
     }
 
     public void deleteOption(int position){
@@ -131,7 +141,7 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.ViewHolder
             });
 
 
-        // TODO: Remove Option From a question if it exists in a question
+
 
 
         //Delete From a LocalList
@@ -139,5 +149,6 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.ViewHolder
         notifyItemRemoved(position);
 
     }
+
 
 }

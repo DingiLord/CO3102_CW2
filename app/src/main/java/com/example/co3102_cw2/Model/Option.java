@@ -4,6 +4,16 @@ public class Option {
     private String parent;
     private String text;
     private boolean status;
+    private int votes = 0;
+
+
+    public int getVotes() {
+        return votes;
+    }
+
+    public void setVotes(int votes) {
+        this.votes = votes;
+    }
 
 
     public String getParent() {

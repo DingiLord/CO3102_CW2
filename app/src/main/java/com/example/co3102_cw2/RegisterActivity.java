@@ -31,6 +31,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -40,6 +41,8 @@ import java.util.Map;
 public class RegisterActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    DocumentReference sni = db.collection("sni_code").document("SNICode");
     EditText rEmail,rFullName,rDOB,rHomeAdd,rPassword,rConfirmPassword,rSNI;
     Button register;
     ImageButton camera;
@@ -125,12 +128,17 @@ public class RegisterActivity extends AppCompatActivity {
                     rSNI.setError("SNI Number is 8 Digits");
                     return;
                 }
+                // Get a List of all Sni Codes
+
+
                 mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
                             Log.d(TAG, "createUserWithEmail:success");
                             addUserToDatabase(email,fullName,dob,homeAddress,sni);
+                            Intent intent = new Intent(getBaseContext(),UserActivity.class);
+                            startActivity(intent);
 
                         }else{
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
