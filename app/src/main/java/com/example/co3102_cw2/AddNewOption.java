@@ -132,7 +132,6 @@ public class AddNewOption extends BottomSheetDialogFragment {
                         });
 
                     } else {
-//                        createOptionAndAddToDatabase(OptionText);
                         Option option = new Option();
                         option.setStatus(false);
                         option.setText(OptionText);
@@ -154,11 +153,6 @@ public class AddNewOption extends BottomSheetDialogFragment {
     }
 
     private void addTempToDatabase(Option option){
-//        FirebaseFirestore db = FirebaseFirestore.getInstance();
-//        Map<String, Object> optionMap = new HashMap<>();
-//        String identifier = String.valueOf(getOptionID());
-//        Toast.makeText(getContext(), identifier, Toast.LENGTH_SHORT).show();
-//        optionMap.put(String.valueOf(option.getId()),option);
         db.collection("tmp").add(option).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {

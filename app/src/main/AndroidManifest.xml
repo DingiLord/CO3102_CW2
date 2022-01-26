@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CO3102_CW2">
         <activity
+            android:name=".EditQuestionActivity"
+            android:exported="false" />
+        <activity
             android:name=".AddNewQuestionActivity"
             android:exported="false"
             android:parentActivityName=".AdminActivity" />

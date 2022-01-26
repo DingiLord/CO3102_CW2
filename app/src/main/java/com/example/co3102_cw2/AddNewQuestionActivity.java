@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.co3102_cw2.Adapter.OptionAdapter;
 import com.example.co3102_cw2.Model.Option;
@@ -43,9 +45,11 @@ public class AddNewQuestionActivity extends AppCompatActivity implements DialogC
     private ArrayList<Option> optionList;
     private FloatingActionButton floatingActionButton;
     private EditText questionText;
-    private Button finish;
+    private Button finish, remove;
+    private TextView questionTitle;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference tmp = db.collection("tmp");
+    CollectionReference quest = db.collection("questions");
 
     //TODO: Implement edit and remove on options
 
@@ -55,15 +59,19 @@ public class AddNewQuestionActivity extends AppCompatActivity implements DialogC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_question);
         optionList = new ArrayList<>();
+        questionTitle = findViewById(R.id.CreateAQuetionText);
         questionText = findViewById(R.id.QuestionTextCreate);
         optionRecyclerView = findViewById(R.id.OptionsRecyclerView);
         optionRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        optionAdapter = new OptionAdapter(this);
+        optionAdapter = new OptionAdapter();
         optionRecyclerView.setAdapter(optionAdapter);
         finish = findViewById(R.id.finishCreatingQuestionButton);
         floatingActionButton = findViewById(R.id.FABQuestionCreation);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new RecyclerItemTouchHelper(optionAdapter));
         itemTouchHelper.attachToRecyclerView(optionRecyclerView);
+        remove = findViewById(R.id.deleteQuestion);
+        remove.setVisibility(View.GONE);
+
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,6 +101,8 @@ public class AddNewQuestionActivity extends AppCompatActivity implements DialogC
             }
         });
 
+
+
     }
     //Once the dialog fragment closes this function populates the option list with newly created option
     @Override
@@ -104,14 +114,15 @@ public class AddNewQuestionActivity extends AppCompatActivity implements DialogC
         tmp.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                int counter = 0;
+//                int counter = 0;
                 //Reset The OptionList Since contains does not capture dupes
                 optionList.clear();
                 for(QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
                     Option option = documentSnapshot.toObject(Option.class);
-                        option.setId(counter);
+//                        option.setId(counter);
+                        option.setParent(questionText.getText().toString());
                         optionList.add(option);
-                        counter++;
+//                        counter++;
                 }
                 optionAdapter.setOptionList(optionList);
                 optionAdapter.notifyDataSetChanged();

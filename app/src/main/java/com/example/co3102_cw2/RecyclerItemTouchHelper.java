@@ -33,7 +33,7 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
         final int position = viewHolder.getBindingAdapterPosition();
         if(direction == ItemTouchHelper.LEFT){
-            AlertDialog.Builder alert = new AlertDialog.Builder(optionAdapter.getContext());
+            AlertDialog.Builder alert = new AlertDialog.Builder(viewHolder.itemView.getContext());
             alert.setTitle("Delete Option");
             alert.setMessage("Are you sure you want to delete this option?");
             alert.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
@@ -66,10 +66,10 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
         int backgroundCornerOffset = 20;
 
         if(dX>0){
-            icon = ContextCompat.getDrawable(optionAdapter.getContext(), R.drawable.ic_baseline_edit);
+            icon = ContextCompat.getDrawable(viewHolder.itemView.getContext(), R.drawable.ic_baseline_edit);
             background = new ColorDrawable(Color.parseColor("#213F0C"));
         } else {
-            icon = ContextCompat.getDrawable(optionAdapter.getContext(), R.drawable.ic_baseline_delete_24);
+            icon = ContextCompat.getDrawable(viewHolder.itemView.getContext(), R.drawable.ic_baseline_delete_24);
             background = new ColorDrawable(Color.parseColor("#AA2411"));
         }
 

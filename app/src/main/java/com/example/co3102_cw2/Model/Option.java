@@ -1,16 +1,17 @@
 package com.example.co3102_cw2.Model;
 
 public class Option {
-    private int id;
+    private String parent;
     private String text;
     private boolean status;
 
-    public int getId() {
-        return id;
+
+    public String getParent() {
+        return parent;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setParent(String parent) {
+        this.parent = parent;
     }
 
     public String getText() {

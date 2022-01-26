@@ -112,9 +112,11 @@ public class AdminActivity extends AppCompatActivity implements QuestionAdapter.
     @Override
     public void onQuestionClick(int position) {
         questionList.get(position);
-        Toast.makeText(this, questionList.get(position).getQuestion(), Toast.LENGTH_SHORT).show();
-//        Intent intent = new Intent(this,AddNewQuestionActivity.class);
-//        startActivity(intent);
+//        Toast.makeText(this, questionList.get(position).getQuestion(), Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(this,EditQuestionActivity.class);
+        intent.putExtra("questionText",questionList.get(position).getQuestion());
+        startActivity(intent);
     }
 
     //    public void InitialData(QuestionAdapter questionAdapter){

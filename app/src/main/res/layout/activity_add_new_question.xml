@@ -10,12 +10,12 @@
         android:id="@+id/CreateAQuetionText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_centerHorizontal="true"
-        android:text="Create A Question"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/create_a_question"
         android:textSize="34sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/QuestionTextCreate"
@@ -58,5 +58,14 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="25dp"
         android:text="Finish" />
+
+    <Button
+        android:id="@+id/deleteQuestion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="25dp"
+        android:layout_marginBottom="25dp"
+        android:text="Remove" />
 
 </RelativeLayout>
