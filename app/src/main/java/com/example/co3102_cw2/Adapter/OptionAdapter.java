@@ -3,6 +3,7 @@ package com.example.co3102_cw2.Adapter;
 import static com.example.co3102_cw2.AddNewOption.TAG;
 import static com.example.co3102_cw2.AddNewOption.newInstance;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.widget.CheckBox;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.co3102_cw2.AddNewOption;
@@ -40,6 +42,7 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.ViewHolder
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference tmp = db.collection("tmp");
     CollectionReference quest = db.collection("questions");
+    private Activity activity;
 
 
     @NonNull
@@ -57,6 +60,9 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.ViewHolder
             super(view);
             option = view.findViewById(R.id.QuestionCheckBox);
         }
+    }
+    public OptionAdapter(Activity activity){
+            this.activity = activity;
     }
 
     @Override
@@ -78,11 +84,12 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.ViewHolder
     public void editOption(int position){
         Option option = optionList.get(position);
         Bundle bundle = new Bundle();
-//        bundle.putInt("id",option.getId());
+        bundle.putString("parent",option.getParent());
         bundle.putString("option",option.getText());
         AddNewOption fragment = new AddNewOption();
         fragment.setArguments(bundle);
-        fragment.show(fragment.getParentFragmentManager(), TAG);
+        fragment.show(((AppCompatActivity)activity).getSupportFragmentManager(), AddNewOption.TAG);
+
 
         Log.d(TAG, "Current Option Text: " + option.getText());
 

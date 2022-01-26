@@ -63,7 +63,7 @@ public class AddNewQuestionActivity extends AppCompatActivity implements DialogC
         questionText = findViewById(R.id.QuestionTextCreate);
         optionRecyclerView = findViewById(R.id.OptionsRecyclerView);
         optionRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        optionAdapter = new OptionAdapter();
+        optionAdapter = new OptionAdapter(this);
         optionRecyclerView.setAdapter(optionAdapter);
         finish = findViewById(R.id.finishCreatingQuestionButton);
         floatingActionButton = findViewById(R.id.FABQuestionCreation);

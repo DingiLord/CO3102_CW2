@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.example.co3102_cw2.Model.Option;
+import com.example.co3102_cw2.Model.Question;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -41,6 +42,7 @@ public class AddNewOption extends BottomSheetDialogFragment {
     private Button newOptionSaveButton;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference tmp = db.collection("tmp");
+    CollectionReference quest = db.collection("questions");
 
     public static AddNewOption newInstance(){
         return new AddNewOption();
@@ -108,26 +110,33 @@ public class AddNewOption extends BottomSheetDialogFragment {
                     if(finalEditMode){
                         // Update existing Option in The List
 
-                        //Update The Database
+                        //Update The Database on new Values
                         tmp.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                             @Override
                             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                                 for(QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
                                     if(documentSnapshot.get("text").toString().equals(bundle.getString("option"))){
-                                        documentSnapshot.getReference().update("text",OptionText).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Log.d(TAG, "DocumentSnapshot successfully updated!");
-                                            }
-                                        })
-                                                .addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                        Log.w(TAG, "Error updating document", e);
-                                                    }
-                                                });
+                                        documentSnapshot.getReference().update("text",OptionText);
                                     }
                                 }
+                                // Updates existing database options
+                                quest.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                        for(QueryDocumentSnapshot documentSnapshotQuest : queryDocumentSnapshots){
+                                            if(documentSnapshotQuest.get("question") != null)
+                                                if(documentSnapshotQuest.get("question").equals(bundle.getString("parent"))){
+                                                    Question question = documentSnapshotQuest.toObject(Question.class);
+                                                    for(Option o : question.getOptions()){
+                                                        if(o.getText().equals(bundle.getString("option"))){
+                                                            o.setText(OptionText);
+                                                        }
+                                                    }
+                                                    documentSnapshotQuest.getReference().update("options",question.getOptions());
+                                                }
+                                        }
+                                    }
+                                });
                             }
                         });
 

@@ -56,7 +56,7 @@ public class EditQuestionActivity extends AppCompatActivity implements DialogClo
         questionText = findViewById(R.id.QuestionTextCreate);
         optionRecyclerView = findViewById(R.id.OptionsRecyclerView);
         optionRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        optionAdapter = new OptionAdapter();
+        optionAdapter = new OptionAdapter(this);
         questionTitle = findViewById(R.id.CreateAQuetionText);
         optionRecyclerView.setAdapter(optionAdapter);
         finish = findViewById(R.id.finishCreatingQuestionButton);
