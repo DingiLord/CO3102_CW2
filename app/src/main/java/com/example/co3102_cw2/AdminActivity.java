@@ -133,7 +133,10 @@ public class AdminActivity extends AppCompatActivity implements QuestionAdapter.
             activityResultLauncher.launch(intent);
 //            startActivity(intent);
         } else {
-            Toast.makeText(getApplicationContext(), "This Question already has votes and cannot be edited", Toast.LENGTH_SHORT).show();
+            // Since it cannot be edited it will give admin the view of bar graph
+            Intent intent = new Intent(this, StatisticsActivity.class);
+            intent.putExtra("questionText",questionList.get(position).getQuestion());
+            activityResultLauncher.launch(intent);
         }
 
     }
