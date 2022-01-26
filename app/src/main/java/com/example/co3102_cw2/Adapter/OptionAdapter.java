@@ -105,7 +105,7 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.ViewHolder
 
         Log.d(TAG, "Current Option Text: " + option.getText());
 
-        
+
     }
 
     public void deleteOption(int position){

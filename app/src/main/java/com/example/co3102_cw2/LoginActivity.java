@@ -113,6 +113,7 @@ public class LoginActivity extends AppCompatActivity {
                             // Starts Admin Activity
                             loggedIn = true;
                             Intent intent = new Intent(getBaseContext(),AdminActivity.class);
+                            intent.putExtra("email",emailLogin.getText().toString());
                             startActivity(intent);
                             break;
                         }
@@ -120,6 +121,7 @@ public class LoginActivity extends AppCompatActivity {
                     if(loggedIn == false){
                         // Stars Normal User Activity
                         Intent intent = new Intent(getBaseContext(),UserActivity.class);
+                        intent.putExtra("email",emailLogin.getText().toString());
                         startActivity(intent);
                     }
                 }

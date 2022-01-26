@@ -15,9 +15,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.co3102_cw2.Adapter.QuestionAdapter;
+import com.example.co3102_cw2.Model.Option;
 import com.example.co3102_cw2.Model.Question;
+import com.example.co3102_cw2.Model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -34,16 +37,45 @@ public class UserActivity extends AppCompatActivity implements QuestionAdapter.O
     private QuestionAdapter questionAdapter;
     private ArrayList<Question> questionList;
     private FloatingActionButton floatingActionButton;
+    private String currentUserEmail;
+    private ArrayList<String> answQuestions = new ArrayList<>();
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    CollectionReference quest = db.collection("questions");
+    CollectionReference users = db.collection("users");
 
     ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
         public void onActivityResult(ActivityResult result) {
             Log.d(TAG, "On Activity Result: ");
+            // Disable the answered Question
+            if(result.getResultCode() == 1) {
+
+                users.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        Intent intent = result.getData();
+                        if(intent != null){
+                            String questionText = intent.getStringExtra("result");
+                            for(QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
+                                if (documentSnapshot.get("email") != null)
+                                    if(documentSnapshot.get("email").toString().equals(currentUserEmail)){
+                                        User user = documentSnapshot.toObject(User.class);
+                                        user.getAnsweredQuestions().add(questionText);
+                                        documentSnapshot.getReference().update("answeredQuestions",user.getAnsweredQuestions());
+                                    }
+                            }
+                        }
+                        // Restarts Activity
+                        Intent refresh = getIntent();
+                        finish();
+                        startActivity(refresh);
+
+                    }
+                });
+
+            }
         }
     });
-
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    CollectionReference questionsDB = db.collection("questions");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,27 +90,38 @@ public class UserActivity extends AppCompatActivity implements QuestionAdapter.O
         questionRecyclerView.setAdapter(questionAdapter);
         floatingActionButton = findViewById(R.id.floatingActionButtonAdmin);
         floatingActionButton.setVisibility(View.GONE); // Hidden for Normal Users
-
+        Bundle extras = getIntent().getExtras();
+        if(extras != null)
+            currentUserEmail = extras.getString("email");
+        getAnsweredQuestions();
         InitialData();
     }
 
     @Override
     public void onQuestionClick(int position) {
-        questionList.get(position);
-        Intent intent = new Intent(this, QuestionActivity.class);
-        intent.putExtra("questionText",questionList.get(position).getQuestion());
-        activityResultLauncher.launch(intent);
+
+        // Check If Question was Answered
+        if(!questionList.get(position).isStatus()){
+            Intent intent = new Intent(this, QuestionActivity.class);
+            intent.putExtra("questionText",questionList.get(position).getQuestion());
+            activityResultLauncher.launch(intent);
+        } else{
+            Toast.makeText(getBaseContext(), "This Question was already answered", Toast.LENGTH_SHORT).show();
+        }
 
     }
 
     // Populates Questions from the Database
     public void InitialData() {
-        questionsDB.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        quest.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 questionList.clear();
                 for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                     Question question = documentSnapshot.toObject(Question.class);
+                    if(answQuestions.contains(question.getQuestion())){
+                        question.setStatus(true);
+                    }
                     questionList.add(question);
                 }
                 questionAdapter.setQuestionList(questionList);
@@ -90,4 +133,19 @@ public class UserActivity extends AppCompatActivity implements QuestionAdapter.O
             }
         });
     }
+    public void getAnsweredQuestions(){
+        users.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for(QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
+                    if (documentSnapshot.get("email") != null)
+                        if(documentSnapshot.get("email").toString().equals(currentUserEmail)){
+                            User user = documentSnapshot.toObject(User.class);
+                            answQuestions.addAll(user.getAnsweredQuestions());
+                        }
+                }
+            }
+        });
+    }
+
 }

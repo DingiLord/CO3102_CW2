@@ -2,6 +2,10 @@ package com.example.co3102_cw2;
 
 import static android.content.ContentValues.TAG;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,6 +19,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.co3102_cw2.Adapter.QuestionAdapter;
+import com.example.co3102_cw2.Model.Option;
 import com.example.co3102_cw2.Model.Question;
 import com.example.co3102_cw2.Model.QuestionListItem;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -44,6 +49,19 @@ public class AdminActivity extends AppCompatActivity implements QuestionAdapter.
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference questionsDB = db.collection("questions");
 
+    ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            Log.d(TAG, "On Activity Result (Admin): ");
+            if(result.getResultCode() == 1){
+                // Refresh
+                Intent refresh = getIntent();
+                finish();
+                startActivity(refresh);
+            }
+        }
+    });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,11 +77,6 @@ public class AdminActivity extends AppCompatActivity implements QuestionAdapter.
 
         InitialData();
 
-//        questionList.add(item);
-//        questionList.add(item);
-//        questionList.add(item);
-//        questionList.add(item);
-//        questionList.add(item);
 
 
 
@@ -107,44 +120,23 @@ public class AdminActivity extends AppCompatActivity implements QuestionAdapter.
 
     @Override
     public void onQuestionClick(int position) {
-        questionList.get(position);
-//        Toast.makeText(this, questionList.get(position).getQuestion(), Toast.LENGTH_SHORT).show();
 
-        Intent intent = new Intent(this,EditQuestionActivity.class);
-        intent.putExtra("questionText",questionList.get(position).getQuestion());
-        startActivity(intent);
+        boolean editable = true;
+
+        for(Option o: questionList.get(position).getOptions()){
+            if(o.getVotes() > 0)
+                editable = false;
+        }
+        if(editable == true){
+            Intent intent = new Intent(this,EditQuestionActivity.class);
+            intent.putExtra("questionText",questionList.get(position).getQuestion());
+            activityResultLauncher.launch(intent);
+//            startActivity(intent);
+        } else {
+            Toast.makeText(getApplicationContext(), "This Question already has votes and cannot be edited", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
-    //    public void InitialData(QuestionAdapter questionAdapter){
-//        questionList = new ArrayList<>();
-//        FirebaseFirestore db = FirebaseFirestore.getInstance();
-//        DocumentReference docRef = db.collection("general").document("Questions");
-//        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                if(task.isSuccessful()){
-//                    DocumentSnapshot documentSnapshot = task.getResult();
-//                    if(documentSnapshot.exists()){
-//                        for(Map.Entry<String,Object> i : documentSnapshot.getData().entrySet()){
-//                          Log.d(TAG,"Question?: "+i.getValue().toString());
-//                          QuestionListItem item = new QuestionListItem();
-//                          item.setStatus(false);
-//                          item.setQuestion(i.getValue().toString());
-//                          questionList.add(item);
-//                        }
-//                        questionAdapter.setQuestionList(questionList);
-//                    } else {
-//                        Log.d(TAG, "No such document");
-//                    }
-//                }
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//                //TODO: action if it fails
-//            }
-//        });
-//
-//    }
 
 }

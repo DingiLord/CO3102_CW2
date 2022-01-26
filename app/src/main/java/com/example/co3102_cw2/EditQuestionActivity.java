@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -117,7 +118,8 @@ public class EditQuestionActivity extends AppCompatActivity implements DialogClo
                         }
                     }
                 });
-
+                Intent intent = new Intent();
+                setResult(1,intent);
                 finish();
             }
         });
@@ -135,6 +137,8 @@ public class EditQuestionActivity extends AppCompatActivity implements DialogClo
                         }
                     }
                 });
+                Intent intent = new Intent();
+                setResult(1,intent);
                 finish();
             }
         });
@@ -189,7 +193,6 @@ public class EditQuestionActivity extends AppCompatActivity implements DialogClo
                 }
             }
         });
-
     }
 
 }

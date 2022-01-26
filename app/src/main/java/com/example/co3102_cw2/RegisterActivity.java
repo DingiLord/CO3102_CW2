@@ -23,6 +23,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.co3102_cw2.Model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -138,6 +139,7 @@ public class RegisterActivity extends AppCompatActivity {
                             Log.d(TAG, "createUserWithEmail:success");
                             addUserToDatabase(email,fullName,dob,homeAddress,sni);
                             Intent intent = new Intent(getBaseContext(),UserActivity.class);
+                            intent.putExtra("email",email);
                             startActivity(intent);
 
                         }else{
@@ -170,18 +172,21 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void addUserToDatabase(String email,String name, String dob, String homeAddress, String sni){
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Map<String, Object> user = new HashMap<>();
-        user.put("Email", email);
-        user.put("Full Name", name);
-        user.put("Date of Birth", dob);
-        user.put("Home Address", homeAddress);
-        user.put("SNI Number", sni);
+        User user = new User(email,name,dob,homeAddress,sni);
+
+
+//        Map<String, Object> user = new HashMap<>();
+//        user.put("Email", email);
+//        user.put("Full Name", name);
+//        user.put("Date of Birth", dob);
+//        user.put("Home Address", homeAddress);
+//        user.put("SNI Number", sni);
 
         db.collection("users").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
-                // TODO: After Successfull Registration move user to the user dashboard and close db connection
                 Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -212,7 +217,6 @@ public class RegisterActivity extends AppCompatActivity {
             GetQRCode.launch(intent);
 
         } else {
-            //TODO: Implement if user refuses to give permissions
             Toast.makeText(getApplicationContext(), "Cannot Use the camera without permissions", Toast.LENGTH_SHORT).show();
         }
     });

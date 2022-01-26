@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -63,6 +64,38 @@ public class QuestionActivity extends AppCompatActivity {
                     return;
                 }
 
+                // Update the selected option ++vote
+                quest.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for(QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
+                            if (documentSnapshot.get("question") != null)
+                                if(documentSnapshot.get("question").toString().equals(question.getText().toString())){
+                                    // Find the Selected Option
+                                    String selectedOptionText = "";
+                                    for(Option o: optionList){
+                                        if(o.isStatus())
+                                            selectedOptionText = o.getText();
+                                    }
+                                    // Vote++
+                                    Question q = documentSnapshot.toObject(Question.class);
+                                    for(Option o : q.getOptions()){
+                                        if(o.getText().equals(selectedOptionText)){
+                                            o.setVotes(o.getVotes() + 1);
+                                        }
+                                    }
+                                    documentSnapshot.getReference().update("options",q.getOptions());
+
+                                    //TODO:  Add This question to the list of answered questions of the user
+                                }
+                        }
+                    }
+                });
+                // Passing back the question to UserActivity In order to know which question was answered
+                Intent intent = new Intent();
+                intent.putExtra("result", question.getText().toString());
+                setResult(1,intent);
+                finish();
             }
         });
     }
