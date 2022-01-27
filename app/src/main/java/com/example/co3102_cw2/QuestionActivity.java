@@ -36,7 +36,8 @@ public class QuestionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question);
-        getSupportActionBar().hide();
+//        getSupportActionBar().hide();
+        getSupportActionBar().setTitle("Please Pick One");
         optionList = new ArrayList<>();
         submit = findViewById(R.id.SubmitQuestionButton);
         question = findViewById(R.id.QuestionText);

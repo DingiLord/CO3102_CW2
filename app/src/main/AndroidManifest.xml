@@ -13,13 +13,16 @@
         android:theme="@style/Theme.CO3102_CW2">
         <activity
             android:name=".StatisticsActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".AdminActivity" />
         <activity
             android:name=".QuestionActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".UserActivity"/>
         <activity
             android:name=".EditQuestionActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".AdminActivity"/>
         <activity
             android:name=".AddNewQuestionActivity"
             android:exported="false"
