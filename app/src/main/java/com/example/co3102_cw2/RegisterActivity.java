@@ -180,18 +180,8 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
-    @Override
-    public void onStart(){
-        super.onStart();
-        // Checking if user is signed in
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
-           //TODO : IF there is time check if user is logged in
-        }
-    }
 
     public void addUserToDatabase(String email,String name, String dob, String homeAddress, String sni){
-
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         User user = new User(email,name,dob,homeAddress,sni);
 
@@ -231,18 +221,6 @@ public class RegisterActivity extends AppCompatActivity {
         }
     });
 
-//    private void getAllSni(){
-//        // Get a List of all Sni Codes
-//        sniDB.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                if(task.isSuccessful()){
-//                    DocumentSnapshot document = task.getResult();
-//                    sniData = document.getData();
-//                }
-//            }
-//        });
-//    }
 
 
 

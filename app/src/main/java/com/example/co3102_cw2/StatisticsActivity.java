@@ -30,7 +30,6 @@ public class StatisticsActivity extends AppCompatActivity {
     private String questionName;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference quest = db.collection("questions");
-    //Todo: Change to get all options from the question
     private List<String> options = new ArrayList<>();
     ArrayList<BarEntry> values = new ArrayList<>();
 

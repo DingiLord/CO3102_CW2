@@ -25,6 +25,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -85,6 +86,7 @@ public class UserActivity extends AppCompatActivity implements QuestionAdapter.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main); // Admin Layout with hidden buttons
+        mAuth = FirebaseAuth.getInstance();
 
         getSupportActionBar().hide();
         questionList = new ArrayList<>();
@@ -101,13 +103,23 @@ public class UserActivity extends AppCompatActivity implements QuestionAdapter.O
         getAnsweredQuestions();
         InitialData();
 
+        // Does not fully signout to remember last email entered
         signout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mAuth.signOut();
                 finish();
             }
         });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser != null){
+            Toast.makeText(getBaseContext(), currentUser.getUid(), Toast.LENGTH_SHORT).show();
+//            finish();
+        }
     }
 
     @Override

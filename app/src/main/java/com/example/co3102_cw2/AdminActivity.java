@@ -24,6 +24,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -61,6 +62,7 @@ public class AdminActivity extends AppCompatActivity implements QuestionAdapter.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
+        mAuth = FirebaseAuth.getInstance();
         questionList = new ArrayList<>();
         questionRecyclerView = findViewById(R.id.QuestionsRecyclerViewAdmin);
         questionRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -85,11 +87,18 @@ public class AdminActivity extends AppCompatActivity implements QuestionAdapter.
         signout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mAuth.signOut();
                 finish();
             }
         });
 
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser != null){
+            finish();
+        }
     }
 
     // Populates Questions from the Database
@@ -133,7 +142,6 @@ public class AdminActivity extends AppCompatActivity implements QuestionAdapter.
             Intent intent = new Intent(this,EditQuestionActivity.class);
             intent.putExtra("questionText",questionList.get(position).getQuestion());
             activityResultLauncher.launch(intent);
-//            startActivity(intent);
         } else {
             // Since it cannot be edited it will give admin the view of bar graph
             Intent intent = new Intent(this, StatisticsActivity.class);
@@ -142,6 +150,5 @@ public class AdminActivity extends AppCompatActivity implements QuestionAdapter.
         }
 
     }
-
 
 }

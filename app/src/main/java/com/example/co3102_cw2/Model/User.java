@@ -11,12 +11,14 @@ public class User {
     String homeAdress;
     String sni;
     List<String> answeredQuestions = new ArrayList<>();
+    String uid;
 
     public User(){
 
     }
 
     public User(String email, String fullName, String dob, String homeAdress, String sni){
+        this.uid = uid;
         this.email = email;
         this.fullName = fullName;
         this.dob = dob;

@@ -42,6 +42,11 @@ public class LoginActivity extends AppCompatActivity {
         passwordLogin = findViewById(R.id.PasswordLogin);
         mAuth = FirebaseAuth.getInstance();
 
+        // Automaticly fills in the last user Email
+        if(mAuth.getCurrentUser() != null){
+            emailLogin.setText(mAuth.getCurrentUser().getEmail());
+        }
+
         // Register Button
         Button registerButton = (Button) findViewById(R.id.RegisterButton);
         registerButton.setOnClickListener(new View.OnClickListener() {
@@ -61,8 +66,6 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String email = emailLogin.getText().toString().trim();
                 String password = passwordLogin.getText().toString().trim();
-
-                //TODO: Check if User Exists
 
                 if(TextUtils.isEmpty(email)){
                     emailLogin.setError("Email is Required");
@@ -106,9 +109,6 @@ public class LoginActivity extends AppCompatActivity {
                 boolean loggedIn = false;
                 if(document.exists()){
                     for(Map.Entry<String,Object> i : document.getData().entrySet()){
-                        // Todo: REMOVE AFTER Finishing The CW2
-                        Log.d(TAG,"Admind ID: " + i.getValue().toString());
-                        Log.d(TAG,"USER ID: " + user.getUid());
 
                         if(user.getUid().equals(i.getValue().toString())){
                             // Starts Admin Activity
@@ -135,11 +135,4 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // TODO: SIGN OUT USER
-
     }
-}

@@ -36,7 +36,6 @@ public class QuestionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question);
-//        getSupportActionBar().hide();
         getSupportActionBar().setTitle("Please Pick One");
         optionList = new ArrayList<>();
         submit = findViewById(R.id.SubmitQuestionButton);
@@ -86,8 +85,6 @@ public class QuestionActivity extends AppCompatActivity {
                                         }
                                     }
                                     documentSnapshot.getReference().update("options",q.getOptions());
-
-                                    //TODO:  Add This question to the list of answered questions of the user
                                 }
                         }
                     }

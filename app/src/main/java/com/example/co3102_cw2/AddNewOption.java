@@ -73,11 +73,6 @@ public class AddNewOption extends BottomSheetDialogFragment {
             editMode = true;
             String option = bundle.getString("option");
             newOptionText.setText(option);
-            if (option.length() > 0) {
-                //TODO: Make button available if there is text
-                //newOptionSaveButton.setTextColor(Colour.);
-
-            }
         }
             newOptionText.addTextChangedListener(new TextWatcher() {
                 @Override
