@@ -113,16 +113,6 @@ public class UserActivity extends AppCompatActivity implements QuestionAdapter.O
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
-            Toast.makeText(getBaseContext(), currentUser.getUid(), Toast.LENGTH_SHORT).show();
-//            finish();
-        }
-    }
-
-    @Override
     public void onQuestionClick(int position) {
 
         // Check If Question was Answered

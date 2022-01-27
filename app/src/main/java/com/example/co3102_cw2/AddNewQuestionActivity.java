@@ -82,19 +82,37 @@ public class AddNewQuestionActivity extends AppCompatActivity implements DialogC
                 // Create a Question
                 Question question = new Question();
                 question.setQuestion(questionText.getText().toString());
-                question.setOptions(optionList);
-                db.collection("questions").add(question).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                db.collection("questions").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "Successfully added a Question to the Database");
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "Error While Adding new Question : " + e);
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        boolean exists = false;
+                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            Question question = documentSnapshot.toObject(Question.class);
+                            if(question.getQuestion().equals(questionText.getText().toString())){
+                                exists = true;
+                                Toast.makeText(getBaseContext(), "This Question already exists", Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                        if(exists == false){
+                            question.setOptions(optionList);
+                            db.collection("questions").add(question).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                @Override
+                                public void onSuccess(DocumentReference documentReference) {
+                                    Log.d(TAG, "Successfully added a Question to the Database");
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d(TAG, "Error While Adding new Question : " + e);
+                                }
+                            });
+                            finish();
+                        }
+
                     }
                 });
-                finish();
+
             }
         });
 

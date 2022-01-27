@@ -92,14 +92,6 @@ public class AdminActivity extends AppCompatActivity implements QuestionAdapter.
         });
 
     }
-    @Override
-    public void onStart() {
-        super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
-            finish();
-        }
-    }
 
     // Populates Questions from the Database
     public void InitialData(){
