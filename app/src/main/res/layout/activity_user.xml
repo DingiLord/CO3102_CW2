@@ -25,5 +25,13 @@
         android:layout_below="@+id/QuestionsText"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:nestedScrollingEnabled="true"/>
+    <Button
+        android:id="@+id/SignOutUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="25dp"
+        android:text="Sign Out" />
 
 </RelativeLayout>

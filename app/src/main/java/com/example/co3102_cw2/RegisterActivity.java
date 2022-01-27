@@ -34,8 +34,10 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,7 +45,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    DocumentReference sni = db.collection("sni_code").document("SNICode");
+    DocumentReference sniDB = db.collection("sni_code").document("SNICode");
     EditText rEmail,rFullName,rDOB,rHomeAdd,rPassword,rConfirmPassword,rSNI;
     Button register;
     ImageButton camera;
@@ -85,10 +87,6 @@ public class RegisterActivity extends AppCompatActivity {
                 String confirmPassword = rConfirmPassword.getText().toString().trim();
                 String sni = rSNI.getText().toString().trim();
 
-                // Checks for Correct Values
-                //TODO: Check for Proper Calendar Date Format and make sure The user is atleast 16 years old
-                //TODO: Check SNI number with the DataBase
-                //TODO: Check if SNI is already Taken
                 if(TextUtils.isEmpty(email)){
                     rEmail.setError("Email is Required");
                     return;
@@ -129,31 +127,53 @@ public class RegisterActivity extends AppCompatActivity {
                     rSNI.setError("SNI Number is 8 Digits");
                     return;
                 }
-                // Get a List of all Sni Codes
 
-
-                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                // Firabase accesses database asycrinuosly therefore I need call this during all other checks
+                sniDB.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if(task.isSuccessful()){
-                            Log.d(TAG, "createUserWithEmail:success");
-                            addUserToDatabase(email,fullName,dob,homeAddress,sni);
-                            Intent intent = new Intent(getBaseContext(),UserActivity.class);
-                            intent.putExtra("email",email);
-                            startActivity(intent);
+                            DocumentSnapshot document = task.getResult();
+                            Map<String, Object> sniData = document.getData();
 
-                        }else{
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                            if(!sniData.keySet().contains(sni)){
+                                rSNI.setError("This SNI Number Does Not Exist");
+                            }
+                            else if(sniData.keySet().contains(sni) && sniData.get(sni).equals(true)){
+                                rSNI.setError("This SNI Number is Already Taken");
+                            } else {
+                                // Create a new account
+                                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        if(task.isSuccessful()){
+                                            Log.d(TAG, "createUserWithEmail:success");
+                                            addUserToDatabase(email,fullName,dob,homeAddress,sni);
+                                            Intent intent = new Intent(getBaseContext(),UserActivity.class);
+                                            intent.putExtra("email",email);
+                                            startActivity(intent);
+
+                                            //Mark sni code as taken in the database
+                                            document.getReference().update(sni,true);
+
+                                        }else{
+                                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                                        }
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        if(e instanceof FirebaseAuthUserCollisionException){
+                                            rEmail.setError("Email is Already Taken");
+                                            return;
+                                        }else
+                                            rEmail.setError("Email was badly formatted");
+                                            return;
+                                    }
+                                });
+                            }
                         }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        if(e instanceof FirebaseAuthUserCollisionException){
-                            rEmail.setError("Email is Already Taken");
-                            return;
-                        }else
-                            Toast.makeText(getApplicationContext(), "Something Went Really Wrong", Toast.LENGTH_SHORT).show();
+
                     }
                 });
 
@@ -166,8 +186,7 @@ public class RegisterActivity extends AppCompatActivity {
         // Checking if user is signed in
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
-           // Toast.makeText(getApplicationContext(), "You're already logged in", Toast.LENGTH_SHORT).show();
-            //TODO: Block the button
+           //TODO : IF there is time check if user is logged in
         }
     }
 
@@ -175,14 +194,6 @@ public class RegisterActivity extends AppCompatActivity {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         User user = new User(email,name,dob,homeAddress,sni);
-
-
-//        Map<String, Object> user = new HashMap<>();
-//        user.put("Email", email);
-//        user.put("Full Name", name);
-//        user.put("Date of Birth", dob);
-//        user.put("Home Address", homeAddress);
-//        user.put("SNI Number", sni);
 
         db.collection("users").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
@@ -212,7 +223,6 @@ public class RegisterActivity extends AppCompatActivity {
     private ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted ->{
         if (isGranted){
 
-//            Toast.makeText(getApplicationContext(), "WOW", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(getBaseContext(), CameraActivity.class);
             GetQRCode.launch(intent);
 
@@ -220,6 +230,19 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Cannot Use the camera without permissions", Toast.LENGTH_SHORT).show();
         }
     });
+
+//    private void getAllSni(){
+//        // Get a List of all Sni Codes
+//        sniDB.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if(task.isSuccessful()){
+//                    DocumentSnapshot document = task.getResult();
+//                    sniData = document.getData();
+//                }
+//            }
+//        });
+//    }
 
 
 
