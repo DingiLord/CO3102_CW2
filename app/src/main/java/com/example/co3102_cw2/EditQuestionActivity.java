@@ -51,6 +51,7 @@ public class EditQuestionActivity extends AppCompatActivity implements DialogClo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
         //Uses the same layout as adding new question
         setContentView(R.layout.activity_add_new_question);
         optionList = new ArrayList<>();
@@ -106,21 +107,33 @@ public class EditQuestionActivity extends AppCompatActivity implements DialogClo
                 quest.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        for(QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
-                            if (documentSnapshot.get("question") != null)
-                                if(documentSnapshot.get("question").toString().equals(questionName)){
-                                    documentSnapshot.getReference().update("question",questionText.getText().toString());
-                                    for(Option o: optionList){
-                                        o.setParent(questionText.getText().toString());
-                                    }
-                                    documentSnapshot.getReference().update("options",optionList);
-                                }
+                        boolean exists = false;
+                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            Question question = documentSnapshot.toObject(Question.class);
+                            if(question.getQuestion().equals(questionText.getText().toString())){
+                                exists = true;
+                                Toast.makeText(getBaseContext(), "This Question already exists", Toast.LENGTH_SHORT).show();
+                            }
+
                         }
+                        if(exists == false){
+                            for(QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
+                                if (documentSnapshot.get("question") != null)
+                                    if(documentSnapshot.get("question").toString().equals(questionName)){
+                                        documentSnapshot.getReference().update("question",questionText.getText().toString());
+                                        for(Option o: optionList){
+                                            o.setParent(questionText.getText().toString());
+                                        }
+                                        documentSnapshot.getReference().update("options",optionList);
+                                    }
+                            }
+                            Intent intent = new Intent();
+                            setResult(1,intent);
+                            finish();
+                        }
+
                     }
                 });
-                Intent intent = new Intent();
-                setResult(1,intent);
-                finish();
             }
         });
         remove.setOnClickListener(new View.OnClickListener() {
