@@ -15,15 +15,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.co3102_cw2.Adapter.QuestionAdapter;
-import com.example.co3102_cw2.Model.Option;
 import com.example.co3102_cw2.Model.Question;
 import com.example.co3102_cw2.Model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -39,6 +40,9 @@ public class UserActivity extends AppCompatActivity implements QuestionAdapter.O
     private FloatingActionButton floatingActionButton;
     private String currentUserEmail;
     private ArrayList<String> answQuestions = new ArrayList<>();
+    private Button signout;
+
+    private FirebaseAuth mAuth;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference quest = db.collection("questions");
     CollectionReference users = db.collection("users");
@@ -80,7 +84,7 @@ public class UserActivity extends AppCompatActivity implements QuestionAdapter.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin); // Admin Layout with hidden buttons
+        setContentView(R.layout.activity_main); // Admin Layout with hidden buttons
 
         getSupportActionBar().hide();
         questionList = new ArrayList<>();
@@ -89,12 +93,21 @@ public class UserActivity extends AppCompatActivity implements QuestionAdapter.O
         questionAdapter = new QuestionAdapter(this, this);
         questionRecyclerView.setAdapter(questionAdapter);
         floatingActionButton = findViewById(R.id.floatingActionButtonAdmin);
+        signout = findViewById(R.id.SignOutButton);
         floatingActionButton.setVisibility(View.GONE); // Hidden for Normal Users
         Bundle extras = getIntent().getExtras();
         if(extras != null)
             currentUserEmail = extras.getString("email");
         getAnsweredQuestions();
         InitialData();
+
+        signout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAuth.signOut();
+                finish();
+            }
+        });
     }
 
     @Override

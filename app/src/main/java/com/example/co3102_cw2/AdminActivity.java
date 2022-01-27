@@ -11,33 +11,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.Button;
 
 import com.example.co3102_cw2.Adapter.QuestionAdapter;
 import com.example.co3102_cw2.Model.Option;
 import com.example.co3102_cw2.Model.Question;
-import com.example.co3102_cw2.Model.QuestionListItem;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 public class AdminActivity extends AppCompatActivity implements QuestionAdapter.OnQuestionListener {
 
@@ -45,7 +37,9 @@ public class AdminActivity extends AppCompatActivity implements QuestionAdapter.
     private QuestionAdapter questionAdapter;
     private ArrayList<Question> questionList;
     private FloatingActionButton floatingActionButton;
+    private Button signout;
 
+    private FirebaseAuth mAuth;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference questionsDB = db.collection("questions");
 
@@ -65,7 +59,7 @@ public class AdminActivity extends AppCompatActivity implements QuestionAdapter.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin);
+        setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
         questionList = new ArrayList<>();
         questionRecyclerView = findViewById(R.id.QuestionsRecyclerViewAdmin);
@@ -73,6 +67,7 @@ public class AdminActivity extends AppCompatActivity implements QuestionAdapter.
         questionAdapter = new QuestionAdapter(this,this);
         questionRecyclerView.setAdapter(questionAdapter);
         floatingActionButton = findViewById(R.id.floatingActionButtonAdmin);
+        signout = findViewById(R.id.SignOutButton);
 
 
         InitialData();
@@ -85,6 +80,13 @@ public class AdminActivity extends AppCompatActivity implements QuestionAdapter.
             public void onClick(View v) {
                 Intent intent = new Intent(getBaseContext(),AddNewQuestionActivity.class);
                 startActivity(intent);
+            }
+        });
+        signout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAuth.signOut();
+                finish();
             }
         });
 

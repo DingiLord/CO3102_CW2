@@ -40,7 +40,7 @@
             app:srcCompat="@android:drawable/ic_menu_add" />
 
     <Button
-        android:id="@+id/SignOutAdmin"
+        android:id="@+id/SignOutButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
