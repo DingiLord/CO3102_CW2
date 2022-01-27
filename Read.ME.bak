@@ -18,13 +18,10 @@ Administrators can press on a existing question within the AdminActivity and it 
 whether users already voted. This is done to prevent editing/removing existing questions as outlined in the CW2 sheet.
 On editingActivity Administrators can change question title, options and add new options if needed. Moreover, EditQuestionActivity Gives administrators ability to remove the question.
 
-
-**Known Bugs**
-Due to personal circumstances or lack of time I was not able to fix a delay in editing Options, Options are edited and updated. However it requires administrators to manually
-refresh the activity by pressing FAB and back button which causes the recyclerView to get reloaded.
-
-
 ** Accounts **
+
+Currently Created accounts used for testing Purposes
+
 --Admins--
 Username: admin@shangrila.gov.un
 password: shangrila@2021$
@@ -32,3 +29,13 @@ password: shangrila@2021$
 --Users--
 Usernames: user@test.com, test@user.com
 Both users share the same password which is: password
+
+
+**More Info**
+The System uses Firebase NoSQL Approach to storing data.
+Currently I have it loded in with default questions, there are no answers given to them yet.
+The StatisticsActivity can only be seen by going into the "Dummy" and "How old are you?" Questions where I preloded random votes to showcase the horizontal bar graph.
+
+**Known Bugs**
+Due to personal circumstances or lack of time I was not able to fix a delay in editing Options, Options are edited and updated. However it requires administrators to manually
+refresh the activity by pressing FAB and back button which causes the recyclerView to get reloaded.
